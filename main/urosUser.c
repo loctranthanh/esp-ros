@@ -114,7 +114,6 @@ void urosUserNodeConfigSave(const UrosNodeConfig *cfgp) {
  *          Error code.
  */
 uros_err_t urosUserShutdown(const UrosString *msgp) {
-  printf("reach urosUserShutdown\n");
 
   static UrosNodeStatus *const stp = &urosNode.status;
 
@@ -151,8 +150,6 @@ uros_err_t urosUserShutdown(const UrosString *msgp) {
  * @pre     The global static message type set has not been initialized yet.
  */
 void urosUserRegisterStaticTypes(void) {
-  printf("reach urosUserRegisterStaticTypes\n");
-
   urosMsgTypesRegStaticTypes();
 }
 
@@ -163,8 +160,6 @@ void urosUserRegisterStaticTypes(void) {
  * @return  Error code.
  */
 uros_err_t urosUserPublishTopics(void) {
-  printf("reach urosUserPublishTopics\n");
-
   urosHandlersPublishTopics();
   return UROS_OK;
 }
@@ -176,7 +171,6 @@ uros_err_t urosUserPublishTopics(void) {
  * @return  Error code.
  */
 uros_err_t urosUserUnpublishTopics(void) {
-  printf("reach urosUserUnpublishTopics\n");
 
   urosHandlersUnpublishTopics();
   return UROS_OK;
@@ -189,7 +183,6 @@ uros_err_t urosUserUnpublishTopics(void) {
  * @return  Error code.
  */
 uros_err_t urosUserSubscribeTopics(void) {
-  printf("reach urosUserSubscribeTopics\n");
 
   urosHandlersSubscribeTopics();
   return UROS_OK;
@@ -202,7 +195,6 @@ uros_err_t urosUserSubscribeTopics(void) {
  * @return  Error code.
  */
 uros_err_t urosUserUnsubscribeTopics(void) {
-  printf("reach urosUserUnsubscribeTopics\n");
 
   urosHandlersUnsubscribeTopics();
   return UROS_OK;
@@ -215,7 +207,6 @@ uros_err_t urosUserUnsubscribeTopics(void) {
  * @return  Error code.
  */
 uros_err_t urosUserPublishServices(void) {
-  printf("reach urosUserPublishServices\n");
 
   urosHandlersPublishServices();
   return UROS_OK;
@@ -228,7 +219,6 @@ uros_err_t urosUserPublishServices(void) {
  * @return  Error code.
  */
 uros_err_t urosUserUnpublishServices(void) {
-  printf("reach urosUserUnpublishServices\n");
 
   urosHandlersUnpublishServices();
   return UROS_OK;
@@ -241,7 +231,6 @@ uros_err_t urosUserUnpublishServices(void) {
  * @return  Error code.
  */
 uros_err_t urosUserSubscribeParams(void) {
-  printf("reach urosUserSubscribeParams\n");
 
   static const UrosNodeConfig *const cfgp = &urosNode.config;
 
@@ -291,7 +280,6 @@ uros_err_t urosUserSubscribeParams(void) {
  * @return  Error code.
  */
 uros_err_t urosUserUnsubscribeParams(void) {
-  printf("reach urosUserUnsubscribeParams\n");
 
   urosNodeUnsubscribeParam(&rateparamname);
   urosNodeUnsubscribeParam(&sizeparamname);
@@ -313,7 +301,6 @@ uros_err_t urosUserUnsubscribeParams(void) {
  */
 uros_err_t urosUserParamUpdate(const UrosString *keyp,
                                const UrosRpcParam *paramp) {
-  printf("reach urosUserParamUpdate\n");
 
   static const char hex[16] = {
     '0', '1', '2', '3', '4', '5', '6', '7',

@@ -72,30 +72,37 @@ uros_err_t pub_tpc__benchmark__output(UrosTcpRosStatus *tcpstp) {
 
   /* Message allocation and initialization.*/
   UROS_TPC_INIT_H(msg__std_msgs__String);
+  static char payload[] = "hello this is esp32\n";
+  UrosString s_payload = {
+    .datap = payload,
+    .length = strlen(payload),
+  };
 
   /* Published messages loop.*/
   while (!urosTcpRosStatusCheckExit(tcpstp)) {
     /* Assign the string chunk.*/
-    urosMutexLock(&benchmark.lock);
-    msgp->data = benchmark.payload;
-    rate = benchmark.rate;
-    urosMutexUnlock(&benchmark.lock);
-
+    // urosMutexLock(&benchmark.lock);
+    // msgp->data = benchmark.payload;
+    // rate = benchmark.rate;
+    // urosMutexUnlock(&benchmark.lock);
+    // memcpy(msgp->data.datap, payload, strlen(payload));
+    // msgp->data.length = strlen(payload);
+    msgp->data = s_payload;
     /* Send the message.*/
     UROS_MSG_SEND_LENGTH(msgp, msg__std_msgs__String);
     UROS_MSG_SEND_BODY(msgp, msg__std_msgs__String);
-
-    urosMutexLock(&benchmark.lock);
-    ++benchmark.outCount.numMsgs;
-    benchmark.outCount.numBytes += 2 * sizeof(uint32_t) + msgp->data.length;
-    ++benchmark.outCount.deltaMsgs;
-    benchmark.outCount.deltaBytes += 2 * sizeof(uint32_t) + msgp->data.length;
-    urosMutexUnlock(&benchmark.lock);
+    printf("Send message to subscribers\n");
+    // urosMutexLock(&benchmark.lock);
+    // ++benchmark.outCount.numMsgs;
+    // benchmark.outCount.numBytes += 2 * sizeof(uint32_t) + msgp->data.length;
+    // ++benchmark.outCount.deltaMsgs;
+    // benchmark.outCount.deltaBytes += 2 * sizeof(uint32_t) + msgp->data.length;
+    // urosMutexUnlock(&benchmark.lock);
 
     /* No delay, to achieve the maximum throughput (beware: it may hang up).*/
-    if (rate > 0) {
-      urosThreadSleepUsec(1000000ul / rate);
-    }
+    // if (rate > 0) {
+    urosThreadSleepMsec(3000);
+    // }
   }
   tcpstp->err = UROS_OK;
 
@@ -244,7 +251,7 @@ void urosHandlersPublishTopics(void) {
   /* /benchmark/output */
   if (benchmark.hasOutPub) {
     urosNodePublishTopicSZ(
-      "/benchmark/output",
+      "/esp_sensor",
       "std_msgs/String",
       (uros_proc_f)pub_tpc__benchmark__output,
       uros_nulltopicflags
