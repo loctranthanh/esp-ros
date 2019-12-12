@@ -234,13 +234,7 @@ CLEAN_UP:
 
 void app_main(void)
 {
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-      ESP_ERROR_CHECK(nvs_flash_erase());
-      ret = nvs_flash_init();
-    }
-    esp_log_level_set("*", ESP_LOG_INFO);
-    ESP_ERROR_CHECK(ret);
+    ESP_ERROR_CHECK(nvs_flash_init());
     esp_netif_init();
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
@@ -308,8 +302,12 @@ void app_main(void)
     // urosConnObjectInit(&conn);
     // err = urosConnCreate(&conn, UROS_PROTO_UDP);
     // err = urosConnConnect(&conn, addrp);
-
+    // vTaskDelay(5000 / portTICK_PERIOD_MS);
     app_initialize();
+    while (1) {
+        ESP_LOGI(TAG, "free memory: %d", esp_get_free_heap_size());
+        vTaskDelay(3000 / portTICK_PERIOD_MS);
+    }
     // xTaskCreate(&http_test_task, "http_test_task", 8192, NULL, 5, NULL);
     // xTaskCreate(tcp_server_task, "tcp_server_task", 1024 * 4, NULL, 5, NULL);
 }

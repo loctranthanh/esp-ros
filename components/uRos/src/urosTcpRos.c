@@ -1305,7 +1305,7 @@ uros_err_t urosTcpRosCallService(const UrosAddr *pubaddrp,
   /* Connect to the remote service host.*/
   urosConnObjectInit(&conn);
   urosTcpRosStatusObjectInit(&tcpst, &conn);
-  tcpst.err = urosConnCreate(&conn, UROS_PROTO_UDP); _CHKOK
+  tcpst.err = urosConnCreate(&conn, UROS_PROTO_TCP); _CHKOK
   tcpst.err = urosConnConnect(&conn, pubaddrp); _CHKOK
 
   /* Send the TCPROS connection header, and its response.*/
@@ -1341,7 +1341,6 @@ _error:
  *          Error code.
  */
 uros_err_t urosTcpRosListenerThread(void *data) {
-
   static UrosNodeStatus *const stp = &urosNode.status;
 
   uros_err_t err;
@@ -1352,19 +1351,19 @@ uros_err_t urosTcpRosListenerThread(void *data) {
 
   /* Setup the local address.*/
   locaddr.port = urosNode.config.tcprosAddr.port;
+  printf("tcprosAddr port: %d\n", locaddr.port);
   locaddr.ip.dword = UROS_ANY_IP;
 
   /* Setup the listening socket.*/
   urosConnObjectInit(&conn);
   err = urosConnCreate(&conn, UROS_PROTO_TCP);
-  // urosAssert(err == UROS_OK);
+  urosAssert(err == UROS_OK);
   err = urosConnBind(&conn, &locaddr);
-  // urosAssert(err == UROS_OK);
+  urosAssert(err == UROS_OK);
 
   /* Start listening.*/
   err = urosConnListen(&conn, UROS_TCPROS_LISTENER_BACKLOG);
-  // printf("urosAssert(err == UROS_OK) : %d\n", err == UROS_OK);
-  // urosAssert(err == UROS_OK);
+  urosAssert(err == UROS_OK);
   while (UROS_TRUE) {
     UrosConn *spawnedp;
 

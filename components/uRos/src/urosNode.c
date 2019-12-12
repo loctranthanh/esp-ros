@@ -420,7 +420,6 @@ uros_err_t urosNodeThread(void *argp) {
     exitFlag = stp->exitFlag;
     urosMutexUnlock(&stp->stateLock);
     while (!exitFlag) {
-      ESP_LOGI(TAG, "In loop");
 #if UROS_NODE_POLL_MASTER
       urosError(uros_node_pollmaster() != UROS_OK, break,
                 ("Master node "UROS_IPFMT" lost\n",
@@ -468,7 +467,6 @@ uros_err_t urosNodeThread(void *argp) {
  *          Pointer to the target configuration descriptor.
  */
 void urosNodeConfigLoadDefaults(UrosNodeConfig *cfgp) {
-
   urosAssert(cfgp != NULL);
   urosAssert(UROS_XMLRPC_LISTENER_PORT != UROS_TCPROS_LISTENER_PORT);
 
@@ -991,7 +989,6 @@ uros_err_t urosNodeSubscribeTopicByDesc(UrosTopic *topicp) {
              urosErrorText(err), UROS_STRARG(&topicp->name)));
   urosRpcResponseClean(&res);
   err = urosRpcSlaveConnectToPublishers(&topicp->name, &newpubs);
-  ESP_LOGE(TAG, "connect to topic: %d", err);
   urosError(err != UROS_OK, goto _finally,
             ("Error %s while connecting to new publishers of topic [%.*s]\n",
              urosErrorText(err), UROS_STRARG(&topicp->name)));

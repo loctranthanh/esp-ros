@@ -151,7 +151,6 @@ uros_err_t urosRpcStreamerFlush(UrosRpcStreamer *sp) {
 
   /* Send buffered data.*/
   sp->err = urosConnSend(sp->csp, sp->bufp, sp->buflen - sp->free);
-  printf("error: %d, %s\n", sp->err, sp->bufp);
   urosError(sp->err != UROS_OK, return sp->err,
             ("Error %s while streaming data chunk [%.*s], remote "
              UROS_ADDRFMT"\n",

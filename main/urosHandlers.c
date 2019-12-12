@@ -144,7 +144,8 @@ uros_err_t sub_tpc__benchmark__input(UrosTcpRosStatus *tcpstp) {
 #else
     UROS_MSG_RECV_BODY(msgp, msg__std_msgs__String);
 #endif
-    printf("received: %s\n", msgp->data.datap);
+    // msgp->data.datap[msglen] = '\0';
+    printf("received: %.*s\n", msgp->data.length, msgp->data.datap);
     urosMutexLock(&benchmark.lock);
     ++benchmark.inCount.numMsgs;
     benchmark.inCount.numBytes += 2 * sizeof(uint32_t) + msgp->data.length;

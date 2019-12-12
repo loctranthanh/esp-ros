@@ -396,7 +396,6 @@ uros_err_t uros_lld_conn_bind(UrosConn *cp, const UrosAddr *locaddrp) {
  *          Error code.
  */
 uros_err_t uros_lld_conn_accept(UrosConn *cp, UrosConn *spawnedp) {
-  printf("reach here\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
   int remsock;
   struct sockaddr_in remaddr;
   socklen_t remsize = sizeof(struct sockaddr_in);
@@ -444,6 +443,7 @@ uros_err_t uros_lld_conn_listen(UrosConn *cp, uros_cnt_t backlog) {
   urosAssert(urosConnIsValid(cp));
 
   err = listen(cp->socket, (int)backlog);
+  printf("listen err %d, port: %d\n", err, cp->locaddr.port);
   urosError(err != 0, return UROS_ERR_BADCONN,
             ("Socket error [%s] while listening as "UROS_ADDRFMT"\n",
              strerror(errno), UROS_ADDRARG(&cp->locaddr)));

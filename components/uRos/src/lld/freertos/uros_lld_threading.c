@@ -455,7 +455,6 @@ uros_err_t adapter_task(void* pv)
 {
   adapter_task_param_t* param = pv;
   uros_err_t ret = param->routine(param->argp);
-  xSemaphoreGive(param->lock);
   thread_item_t* item = NULL;
   thread_item_t* target_item = NULL;
   STAILQ_FOREACH(item, g_thread_list, next) {
@@ -467,6 +466,7 @@ uros_err_t adapter_task(void* pv)
   if (target_item) {
     STAILQ_REMOVE(g_thread_list, target_item, thread_item_, next);
   }
+  xSemaphoreGive(param->lock);
   vTaskDelete(NULL);
   return ret;
 }
@@ -494,6 +494,7 @@ uros_err_t uros_lld_thread_createstatic(UrosThreadId *idp, const char *namep,
   new_thread->sem = param.lock;
   STAILQ_INSERT_TAIL(g_thread_list, new_thread, next);
   if (xTaskCreate(adapter_task, namep, stacksize, &param, priority, &new_thread->task_handle) == pdTRUE) {
+    printf("created static task name: %s\n", namep);
     return UROS_OK;
   }
   vSemaphoreDelete(param.lock);

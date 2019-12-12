@@ -73,7 +73,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *          Pointer to the target configuration descriptor.
  */
 void urosUserNodeConfigLoad(UrosNodeConfig *cfgp) {
-  printf("reach urosUserNodeConfigLoad\n");
   urosAssert(cfgp != NULL);
 
   /* Clean any allocated variables.*/

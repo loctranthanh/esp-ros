@@ -1015,6 +1015,7 @@ uros_err_t urosRpcSlaveListenerThread(void *data) {
 
   /* Setup the local address.*/
   locaddr.port = cfgp->xmlrpcAddr.port;
+  printf("xmlrpcAddr port: %d\n", locaddr.port);
   locaddr.ip.dword = UROS_ANY_IP;
 
   /* Setup the listening socket.*/

@@ -74,7 +74,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define UROS_NODE_THREAD_PRIO               1
 
 /** @brief Node thread stack size.*/
-#define UROS_NODE_THREAD_STKSIZE            1024 * 4
+#define UROS_NODE_THREAD_STKSIZE            1024 * 2
 
 /** @} */
 /** @} */
@@ -123,7 +123,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define UROS_XMLRPC_LISTENER_PRIO           2
 
 /** @brief XMLRPC listener thread stack size.*/
-#define UROS_XMLRPC_LISTENER_STKSIZE        1024 * 4
+#define UROS_XMLRPC_LISTENER_STKSIZE        1024 * 2
 
 /** @} */
 
@@ -139,7 +139,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define UROS_XMLRPC_SLAVE_PRIO              10
 
 /** @brief XMLRPC Slave server thread stack size.*/
-#define UROS_XMLRPC_SLAVE_STKSIZE           1024 * 4
+#define UROS_XMLRPC_SLAVE_STKSIZE           1024 * 2
 
 /** @} */
 
@@ -185,7 +185,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define UROS_TCPROS_LISTENER_PRIO           3
 
 /** @brief TCPROS listener thread stack size.*/
-#define UROS_TCPROS_LISTENER_STKSIZE        1024 * 4
+#define UROS_TCPROS_LISTENER_STKSIZE        1024 * 2
 
 /** @} */
 
@@ -201,7 +201,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define UROS_TCPROS_CLIENT_PRIO             60
 
 /** @brief TCPROS Client thread stack size.*/
-#define UROS_TCPROS_CLIENT_STKSIZE          1024 * 4
+#define UROS_TCPROS_CLIENT_STKSIZE          1024 * 2
 
 /** @} */
 
@@ -217,7 +217,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define UROS_TCPROS_SERVER_PRIO             61
 
 /** @brief TCPROS server thread stack size.*/
-#define UROS_TCPROS_SERVER_STKSIZE          1024 * 4
+#define UROS_TCPROS_SERVER_STKSIZE          1024 * 2
 
 /** @} */
 
