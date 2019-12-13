@@ -50,60 +50,37 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* PUBLISHED TOPIC FUNCTIONS                                                 */
 /*===========================================================================*/
 
-/** @addtogroup tcpros_pubtopic_funcs */
-/** @{ */
-
-/*~~~ PUBLISHED TOPIC: /benchmark/output ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-/** @name Topic <tt>/benchmark/output</tt> publisher */
-/** @{ */
-
 /**
- * @brief   TCPROS <tt>/benchmark/output</tt> published topic handler.
+ * @brief   TCPROS published topic handler.
  *
  * @param[in,out] tcpstp
  *          Pointer to a working @p UrosTcpRosStatus object.
  * @return
  *          Error code.
  */
-uros_err_t pub_tpc__benchmark__output(UrosTcpRosStatus *tcpstp) {
+uros_err_t pub_tpc__sensor__output(UrosTcpRosStatus *tcpstp) {
 
   uint32_t rate;
 
   /* Message allocation and initialization.*/
   UROS_TPC_INIT_H(msg__std_msgs__String);
+  msgp->data.datap = malloc(1024);
   static char payload[] = "hello this is esp32\n";
   UrosString s_payload = {
     .datap = payload,
     .length = strlen(payload),
   };
-
   /* Published messages loop.*/
   while (!urosTcpRosStatusCheckExit(tcpstp)) {
-    /* Assign the string chunk.*/
-    // urosMutexLock(&benchmark.lock);
-    // msgp->data = benchmark.payload;
-    // rate = benchmark.rate;
-    // urosMutexUnlock(&benchmark.lock);
-    // memcpy(msgp->data.datap, payload, strlen(payload));
-    // msgp->data.length = strlen(payload);
-    msgp->data = s_payload;
+    strncpy(msgp->data.datap, s_payload.datap, s_payload.length);
+    msgp->data.length = s_payload.length;
     /* Send the message.*/
     UROS_MSG_SEND_LENGTH(msgp, msg__std_msgs__String);
     UROS_MSG_SEND_BODY(msgp, msg__std_msgs__String);
     printf("Send message to subscribers\n");
-    // urosMutexLock(&benchmark.lock);
-    // ++benchmark.outCount.numMsgs;
-    // benchmark.outCount.numBytes += 2 * sizeof(uint32_t) + msgp->data.length;
-    // ++benchmark.outCount.deltaMsgs;
-    // benchmark.outCount.deltaBytes += 2 * sizeof(uint32_t) + msgp->data.length;
-    // urosMutexUnlock(&benchmark.lock);
-
-    /* No delay, to achieve the maximum throughput (beware: it may hang up).*/
-    // if (rate > 0) {
     urosThreadSleepMsec(3000);
-    // }
   }
+  free(msgp->data.datap);
   tcpstp->err = UROS_OK;
 
 _finally:
@@ -123,21 +100,15 @@ _finally:
 /** @addtogroup tcpros_subtopic_funcs */
 /** @{ */
 
-/*~~~ SUBSCRIBED TOPIC: /benchmark/input ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-/** @name Topic <tt>/benchmark/input</tt> subscriber */
-/** @{ */
-
 /**
- * @brief   TCPROS <tt>/benchmark/input</tt> subscribed topic handler.
+ * @brief   TCPROS subscribed topic handler.
  *
  * @param[in,out] tcpstp
  *          Pointer to a working @p UrosTcpRosStatus object.
  * @return
  *          Error code.
  */
-uros_err_t sub_tpc__benchmark__input(UrosTcpRosStatus *tcpstp) {
-  printf("sub_tpc__benchmark__input\n");
+uros_err_t sub_tpc__control__input(UrosTcpRosStatus *tcpstp) {
   /* Message allocation and initialization.*/
   UROS_TPC_INIT_H(msg__std_msgs__String);
 
@@ -151,51 +122,24 @@ uros_err_t sub_tpc__benchmark__input(UrosTcpRosStatus *tcpstp) {
 #else
     UROS_MSG_RECV_BODY(msgp, msg__std_msgs__String);
 #endif
-    // msgp->data.datap[msglen] = '\0';
     printf("received: %.*s\n", msgp->data.length, msgp->data.datap);
-    urosMutexLock(&benchmark.lock);
-    ++benchmark.inCount.numMsgs;
-    benchmark.inCount.numBytes += 2 * sizeof(uint32_t) + msgp->data.length;
-    ++benchmark.inCount.deltaMsgs;
-    benchmark.inCount.deltaBytes += 2 * sizeof(uint32_t) + msgp->data.length;
-    urosMutexUnlock(&benchmark.lock);
-
-    /* Dispose the contents of the message.*/
-    clean_msg__std_msgs__String(msgp);
-  }
-  tcpstp->err = UROS_OK;
-
-_finally:
-  /* Message deinitialization and deallocation.*/
-  UROS_TPC_UNINIT_H(msg__std_msgs__String);
-  return tcpstp->err;
-}
-
-/** @} */
-
-/*~~~ SUBSCRIBED TOPIC: /benchmark/output ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-/** @name Topic <tt>/benchmark/output</tt> subscriber */
-/** @{ */
-
-/**
- * @brief   TCPROS <tt>/benchmark/output</tt> subscribed topic handler.
- *
- * @param[in,out] tcpstp
- *          Pointer to a working @p UrosTcpRosStatus object.
- * @return
- *          Error code.
- */
-uros_err_t sub_tpc__benchmark__output(UrosTcpRosStatus *tcpstp) {
-
-  /* Message allocation and initialization.*/
-  UROS_TPC_INIT_H(msg__std_msgs__String);
-
-  /* Subscribed messages loop.*/
-  while (!urosTcpRosStatusCheckExit(tcpstp)) {
-    /* Receive the next message.*/
-    UROS_MSG_RECV_LENGTH();
-    UROS_MSG_RECV_BODY(msgp, msg__std_msgs__String);
+    app_command_t received_command = STOP;
+    if (!strncmp(msgp->data.datap, "UP", 2)) {
+      received_command = FORWARD;
+    } else if (!strncmp(msgp->data.datap, "DOWN", 4)) {
+      received_command = BACKWARD;
+    } else if (!strncmp(msgp->data.datap, "LEFT", 4)) {
+      received_command = TURN_LEFT;
+    } else if (!strncmp(msgp->data.datap, "RIGHT", 5)) {
+      received_command = TURN_RIGHT;
+    } else if (!strncmp(msgp->data.datap, "ROTATE_LEFT", 11)) {
+      received_command = ROTATE_LEFT;
+    } else if (!strncmp(msgp->data.datap, "ROTATE_RIGHT", 12)) {
+      received_command = ROTATE_RIGHT;
+    }
+    urosMutexLock(&control.lock);
+    control.command = received_command;
+    urosMutexUnlock(&control.lock);
 
     /* Dispose the contents of the message.*/
     clean_msg__std_msgs__String(msgp);
@@ -248,15 +192,12 @@ _finally:
 void urosHandlersPublishTopics(void) {
   printf("reach urosHandlersPublishTopics\n");
 
-  /* /benchmark/output */
-  if (benchmark.hasOutPub) {
-    urosNodePublishTopicSZ(
-      "/esp_sensor",
-      "std_msgs/String",
-      (uros_proc_f)pub_tpc__benchmark__output,
-      uros_nulltopicflags
-    );
-  }
+  urosNodePublishTopicSZ(
+    "/esp_sensor",
+    "std_msgs/String",
+    (uros_proc_f)pub_tpc__sensor__output,
+    uros_nulltopicflags
+  );
 }
 
 /**
@@ -265,12 +206,6 @@ void urosHandlersPublishTopics(void) {
  */
 void urosHandlersUnpublishTopics(void) {
 
-  /* /benchmark/output */
-  if (benchmark.hasOutPub) {
-    urosNodeUnpublishTopicSZ(
-      "/benchmark/output"
-    );
-  }
 }
 
 /**
@@ -280,25 +215,12 @@ void urosHandlersUnpublishTopics(void) {
 void urosHandlersSubscribeTopics(void) {
   printf("reach urosHandlersSubscribeTopics\n");
 
-  /* /benchmark/input */
-  if (benchmark.hasInSub) {
-    urosNodeSubscribeTopicSZ(
-      "/chatter",
-      "std_msgs/String",
-      (uros_proc_f)sub_tpc__benchmark__input,
-      uros_nulltopicflags
-    );
-  }
-
-  /* /benchmark/output */
-  // if (benchmark.hasOutSub) {
-  //   urosNodeSubscribeTopicSZ(
-  //     "/benchmark/output",
-  //     "std_msgs/String",
-  //     (uros_proc_f)sub_tpc__benchmark__output,
-  //     uros_nulltopicflags
-  //   );
-  // }
+  urosNodeSubscribeTopicSZ(
+    "/controler",
+    "std_msgs/String",
+    (uros_proc_f)sub_tpc__control__input,
+    uros_nulltopicflags
+  );
 }
 
 /**
@@ -307,22 +229,6 @@ void urosHandlersSubscribeTopics(void) {
  */
 void urosHandlersUnsubscribeTopics(void) {
 
-  /* /benchmark/input */
-  if (benchmark.hasInSub) {
-    urosNodeUnsubscribeTopicSZ(
-      "/chatter"
-    );
-  }
-
-  /* /benchmark/output */
-  // if (benchmark.hasOutSub) {
-  //   urosNodeSubscribeTopicSZ(
-  //     "/benchmark/output",
-  //     "std_msgs/String",
-  //     (uros_proc_f)sub_tpc__benchmark__output,
-  //     uros_nulltopicflags
-  //   );
-  // }
 }
 
 /**

@@ -40,11 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /* GLOBAL VARIABLES                                                          */
 /*===========================================================================*/
 
-const UrosString rateparamname = { 15, "/benchmark_rate" };
-const UrosString sizeparamname = { 15, "/benchmark_size" };
-
-/** @brief Benchmark status.*/
-benchmark_t benchmark;
+control_t control;
 
 /*===========================================================================*/
 /* GLOBAL FUNCTIONS                                                          */
@@ -52,23 +48,9 @@ benchmark_t benchmark;
 
 void app_initialize(void) {
 
-  urosMutexObjectInit(&benchmark.lock);
-  benchmark.rate = 1;
-  urosStringObjectInit(&benchmark.payload);
+  urosMutexObjectInit(&control.lock);
 
-  benchmark.hasOutPub = UROS_TRUE;
-  benchmark.hasInSub = UROS_TRUE;
-  benchmark.hasOutSub = UROS_FALSE;
-
-  benchmark.inCount.numMsgs = 0;
-  benchmark.inCount.numBytes = 0;
-  benchmark.inCount.deltaMsgs = 0;
-  benchmark.inCount.deltaBytes = 0;
-
-  benchmark.outCount.numMsgs = 0;
-  benchmark.outCount.numBytes = 0;
-  benchmark.outCount.deltaMsgs = 0;
-  benchmark.outCount.deltaBytes = 0;
+  control.command = STOP;
 
   urosInit();
   urosNodeCreateThread();

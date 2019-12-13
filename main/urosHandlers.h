@@ -52,21 +52,17 @@ extern "C" {
 /* PUBLISHED TOPIC PROTOTYPES                                                */
 /*===========================================================================*/
 
-/*~~~ PUBLISHED TOPIC: /benchmark/output ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~ PUBLISHED TOPIC: /esp_sensor ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-uros_err_t pub_tpc__benchmark__output(UrosTcpRosStatus *tcpstp);
+uros_err_t pub_tpc__sensor__output(UrosTcpRosStatus *tcpstp);
 
 /*===========================================================================*/
 /* SUBSCRIBED TOPIC PROTOTYPES                                               */
 /*===========================================================================*/
 
-/*~~~ SUBSCRIBED TOPIC: /benchmark/input ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~ SUBSCRIBED TOPIC: /controler ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-uros_err_t sub_tpc__benchmark__input(UrosTcpRosStatus *tcpstp);
-
-/*~~~ SUBSCRIBED TOPIC: /benchmark/output ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-uros_err_t sub_tpc__benchmark__output(UrosTcpRosStatus *tcpstp);
+uros_err_t sub_tpc__control__input(UrosTcpRosStatus *tcpstp);
 
 /*===========================================================================*/
 /* PUBLISHED SERVICE PROTOTYPES                                              */

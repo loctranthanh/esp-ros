@@ -232,44 +232,44 @@ uros_err_t urosUserUnpublishServices(void) {
  */
 uros_err_t urosUserSubscribeParams(void) {
 
-  static const UrosNodeConfig *const cfgp = &urosNode.config;
+  // static const UrosNodeConfig *const cfgp = &urosNode.config;
 
-  UrosRpcParam paramval;
-  UrosRpcResponse res;
-  uros_err_t err; (void)err;
+  // UrosRpcParam paramval;
+  // UrosRpcResponse res;
+  // uros_err_t err; (void)err;
 
-  urosRpcResponseObjectInit(&res);
-  urosRpcParamObjectInit(&paramval, UROS_RPCP_INT);
+  // urosRpcResponseObjectInit(&res);
+  // urosRpcParamObjectInit(&paramval, UROS_RPCP_INT);
 
-  /* Output rate (packets/s).*/
-  err = urosRpcCallHasParam(&cfgp->masterAddr, &cfgp->nodeName,
-                            &rateparamname, &res);
-  urosAssert(err == UROS_OK);
-  if (!res.valuep->value.boolean) {
-    urosRpcResponseClean(&res);
-    paramval.value.int32 = 1;
-    err = urosRpcCallSetParam(&cfgp->masterAddr, &cfgp->nodeName,
-                              &rateparamname, &paramval, &res);
-    urosAssert(err == UROS_OK);
-  }
-  urosRpcResponseClean(&res);
-  urosNodeSubscribeParam(&rateparamname);
+  // /* Output rate (packets/s).*/
+  // err = urosRpcCallHasParam(&cfgp->masterAddr, &cfgp->nodeName,
+  //                           &rateparamname, &res);
+  // urosAssert(err == UROS_OK);
+  // if (!res.valuep->value.boolean) {
+  //   urosRpcResponseClean(&res);
+  //   paramval.value.int32 = 1;
+  //   err = urosRpcCallSetParam(&cfgp->masterAddr, &cfgp->nodeName,
+  //                             &rateparamname, &paramval, &res);
+  //   urosAssert(err == UROS_OK);
+  // }
+  // urosRpcResponseClean(&res);
+  // urosNodeSubscribeParam(&rateparamname);
 
-  /* Packet size (string length).*/
-  err = urosRpcCallHasParam(&cfgp->masterAddr, &cfgp->nodeName,
-                            &sizeparamname, &res);
-  urosAssert(err == UROS_OK);
-  if (!res.valuep->value.boolean) {
-    urosRpcResponseClean(&res);
-    paramval.value.int32 = 0;
-    err = urosRpcCallSetParam(&cfgp->masterAddr, &cfgp->nodeName,
-                              &sizeparamname, &paramval, &res);
-    urosAssert(err == UROS_OK);
-  }
-  urosRpcResponseClean(&res);
-  urosNodeSubscribeParam(&sizeparamname);
+  // /* Packet size (string length).*/
+  // err = urosRpcCallHasParam(&cfgp->masterAddr, &cfgp->nodeName,
+  //                           &sizeparamname, &res);
+  // urosAssert(err == UROS_OK);
+  // if (!res.valuep->value.boolean) {
+  //   urosRpcResponseClean(&res);
+  //   paramval.value.int32 = 0;
+  //   err = urosRpcCallSetParam(&cfgp->masterAddr, &cfgp->nodeName,
+  //                             &sizeparamname, &paramval, &res);
+  //   urosAssert(err == UROS_OK);
+  // }
+  // urosRpcResponseClean(&res);
+  // urosNodeSubscribeParam(&sizeparamname);
 
-  urosRpcParamClean(&paramval, UROS_TRUE);
+  // urosRpcParamClean(&paramval, UROS_TRUE);
   return UROS_OK;
 }
 
@@ -281,8 +281,8 @@ uros_err_t urosUserSubscribeParams(void) {
  */
 uros_err_t urosUserUnsubscribeParams(void) {
 
-  urosNodeUnsubscribeParam(&rateparamname);
-  urosNodeUnsubscribeParam(&sizeparamname);
+  // urosNodeUnsubscribeParam(&rateparamname);
+  // urosNodeUnsubscribeParam(&sizeparamname);
 
   return UROS_OK;
 }
@@ -302,48 +302,7 @@ uros_err_t urosUserUnsubscribeParams(void) {
 uros_err_t urosUserParamUpdate(const UrosString *keyp,
                                const UrosRpcParam *paramp) {
 
-  static const char hex[16] = {
-    '0', '1', '2', '3', '4', '5', '6', '7',
-    '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
-  };
-
-  (void)keyp;
-  (void)paramp;
-
-  urosAssert(urosStringNotEmpty(keyp));
-  urosAssert(paramp != NULL);
-
-  if (0 == urosStringCmp(keyp, &rateparamname)) {
-    // urosAssert(paramp->class == UROS_RPCP_INT);
-    benchmark.rate = (uint32_t)paramp->value.int32;
-    return UROS_OK;
-  }
-
-  if (0 == urosStringCmp(keyp, &sizeparamname)) {
-    size_t i;
-
-    // urosAssert(paramp->class == UROS_RPCP_INT);
-    urosMutexLock(&benchmark.lock);
-    urosStringClean(&benchmark.payload);
-    urosAssert(paramp->value.int32 >= 0);
-    urosAssert(paramp->value.int32 < 100 * (1 << (20 - 3)));
-    benchmark.payload.length = (uint32_t)paramp->value.int32;
-    if (benchmark.payload.length > 0) {
-      benchmark.payload.datap = urosArrayNew(NULL, benchmark.payload.length,
-                                             char);
-      for (i = 0; i < benchmark.payload.length; ++i) {
-        benchmark.payload.datap[i] = hex[i & 0x0F];
-      }
-      urosAssert(benchmark.payload.datap != NULL);
-    } else {
-      benchmark.payload.datap = NULL;
-    }
-    urosMutexUnlock(&benchmark.lock);
-    return UROS_OK;
-  }
-
-  /* Unknown parameter name.*/
-  return UROS_ERR_BADPARAM;
+  return ESP_OK;
 }
 
 /** @} */

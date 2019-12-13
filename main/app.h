@@ -61,26 +61,23 @@ typedef struct streamcnt_t {
   size_t        deltaBytes;     /**< @brief Incremental exchanged size.*/
 } streamcnt_t;
 
+typedef enum {
+  STOP = 0,
+  FORWARD,
+  BACKWARD,
+  TURN_LEFT,
+  TURN_RIGHT,
+  ROTATE_LEFT,
+  ROTATE_RIGHT,
+} app_command_t;
+
 /**
  * @brief   Benchmark status.
  */
-typedef struct benchmark_t {
+typedef struct control_t {
   UrosMutex     lock;           /**< @brief Lock word.*/
-
-  /* Configuration.*/
-  uint32_t      rate;           /**< @brief Packets/s.*/
-  UrosString    payload;        /**< @brief Packet payload string.*/
-  uros_bool_t   hasOutPub;      /**< @brief Creates the publisher of
-                                 *          <tt>/benchmark/output</tt>.*/
-  uros_bool_t   hasInSub;       /**< @brief Creates the subscriber of
-                                 *          <tt>/benchmark/input</tt>.*/
-  uros_bool_t   hasOutSub;      /**< @brief Creates the subscriber of
-                                 *          <tt>/benchmark/output</tt>.*/
-
-  /* Meters.*/
-  streamcnt_t   inCount;        /**< @brief Incoming stream counters.*/
-  streamcnt_t   outCount;       /**< @brief Outgoing stream counters.*/
-} benchmark_t;
+  app_command_t command;
+} control_t;
 
 /** @brief Sequential stream on UART1 (SD1).*/
 #define SS1                 ((BaseSequentialStream *)&SD1)
@@ -92,8 +89,8 @@ typedef struct benchmark_t {
 /* GLOBAL VARIABLES                                                          */
 /*===========================================================================*/
 
-extern benchmark_t benchmark;
-extern const UrosString rateparamname, sizeparamname;
+extern control_t control;
+// extern const UrosString rateparamname, sizeparamname;
 
 /*===========================================================================*/
 /* GLOBAL PROTOTYPES                                                         */
